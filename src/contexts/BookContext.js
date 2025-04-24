@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useState } from 'react';
+import React, { createContext, useEffect, useReducer, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { bookReducer } from '../reducers/bookReducer';
 
@@ -13,7 +13,10 @@ const BookContextProvider = (props) => {
 
     //using useReducer
 
-    const [books, dispatch] = useReducer(bookReducer, []);
+    const [books, dispatch] = useReducer(bookReducer, [], () => {
+        const localData = localStorage.getItem('books');
+        return localData ? JSON.parse(localData) : [];
+    });
 
     //using with useState
     // const addBook = (title, author) => {
@@ -23,6 +26,11 @@ const BookContextProvider = (props) => {
     // const removeBook = (id) => {
     //     setBooks(books.filter(book => book.id !== id));
     // }
+
+    /*add data to localStorage */
+    useEffect(() => {
+        localStorage.setItem('books', JSON.stringify(books));
+    }, [books])
 
     return (
         //using with useState
